@@ -1,0 +1,40 @@
+{
+    "minimum-stability": "dev",
+    "name": "phergie/phergie-slack-client-react",
+    "description": "Slack client library built on React",
+    "keywords": [ "slack", "client", "react" ],
+    "license": "BSD-2-Clause",
+    "support": {
+        "email": "team@phergie.org",
+        "irc": "irc://irc.freenode.net/phergie",
+        "issues": "https://github.com/alexmace/phergie-slack-client-react/issues",
+        "source": "https://github.com/alexmace/phergie-slack-client-react"
+    },
+    "require": {
+        "php": ">=5.4.2",
+        "phergie/phergie-irc-parser": "1.*",
+        "phergie/phergie-irc-generator": "1.*",
+        "phergie/phergie-slack-connection": "dev-master",
+        "react/event-loop": "0.4.*",
+        "react/stream": "~0.4.2",
+        "react/socket-client": "~0.4.2",
+        "react/dns": "0.4.*",
+        "react/promise": "~2.0",
+        "psr/log": "~1.0",
+        "monolog/monolog": "1.6.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*",
+        "phake/phake": "2.0.0-beta2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Phergie\\Slack\\Client\\React\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Phergie\\Slack\\Tests\\Client\\React\\": "tests"
+        }
+    }
+}
