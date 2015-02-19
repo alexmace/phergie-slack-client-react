@@ -4,6 +4,7 @@ namespace Phergie\Slack\Client\React;
 
 use Evenement\EventEmitter;
 use Phergie\Slack\ConnectionInterface;
+use React\EventLoop\LoopInterface;
 
 class Client extends EventEmitter implements
     ClientInterface,
