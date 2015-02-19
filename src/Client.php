@@ -3,6 +3,7 @@
 namespace Phergie\Slack\Client\React;
 
 use Evenement\EventEmitter;
+use Phergie\Slack\ConnectionInterface;
 
 class Client extends EventEmitter implements
     ClientInterface
@@ -23,7 +24,7 @@ class Client extends EventEmitter implements
         $this->emit('connect.before.each', array($connection));
 /*
 		Probably won't want to distinguish between these for Slack.
-		
+
         if ($this->getTransport($connection) === 'ssl') {
             $this->addSecureConnection($connection);
         } else {
