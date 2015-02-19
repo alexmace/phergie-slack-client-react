@@ -2,7 +2,8 @@
 
 namespace Phergie\Slack\Client\React;
 
-class Client 
+class Client extends EventEmitter implements
+    ClientInterface
 {
 	
 }
