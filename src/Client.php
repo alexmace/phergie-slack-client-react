@@ -6,8 +6,39 @@ use Evenement\EventEmitter;
 use Phergie\Slack\ConnectionInterface;
 
 class Client extends EventEmitter implements
-    ClientInterface
+    ClientInterface,
+    LoopAccessorInterface,
+    LoopAwareInterface
 {
+	/**
+     * Event loop
+     *
+     * @var \React\EventLoop\LoopInterface
+     */
+    protected $loop;
+
+    /**
+     * Sets the event loop dependency.
+     *
+     * @param \React\EventLoop\LoopInterface $loop
+     */
+    public function setLoop(LoopInterface $loop)
+    {
+        $this->loop = $loop;
+    }
+    /**
+     * Returns the event loop dependency, initializing it if needed.
+     *
+     * @return \React\EventLoop\LoopInterface
+     */
+    public function getLoop()
+    {
+        if (!$this->loop) {
+            $this->loop = \React\EventLoop\Factory::create();
+        }
+        return $this->loop;
+    }
+
     /**
      * Initializes an IRC connection.
      *
