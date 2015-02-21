@@ -1,10 +1,16 @@
 <?php
+/**
+ * @todo Add an interface for the resolver stuff.
+ *
+ */
 
 namespace Phergie\Slack\Client\React;
 
 use Evenement\EventEmitter;
 use Phergie\Slack\ConnectionInterface;
 use React\EventLoop\LoopInterface;
+use React\Dns\Resolver\Factory;
+use React\Dns\Resolver\Resolver;
 
 class Client extends EventEmitter implements
     ClientInterface,
@@ -21,6 +27,14 @@ class Client extends EventEmitter implements
     protected $httpClient;
     protected $webSocketClient;
 
+	/**
+     * @var \React\Dns\Resolver\Resolver
+     */
+    protected $resolver;
+    /**
+     * @var string
+     */
+    protected $dnsServer = '8.8.8.8';
     /**
      * Sets the event loop dependency.
      *
@@ -41,6 +55,47 @@ class Client extends EventEmitter implements
             $this->loop = \React\EventLoop\Factory::create();
         }
         return $this->loop;
+    }
+    /**
+     * Sets the DNS Resolver.
+     *
+     * @param Resolver $resolver
+     */
+    public function setResolver(Resolver $resolver = null)
+    {
+        $this->resolver = $resolver;
+    }
+    /**
+     * Get the DNS Resolver, if one isn't set in instance will be created.
+     *
+     * @return Resolver
+     */
+    public function getResolver()
+    {
+        if ($this->resolver instanceof Resolver) {
+            return $this->resolver;
+        }
+        $factory = new Factory();
+        $this->resolver = $factory->createCached($this->getDnsServer(), $this->getLoop());
+        return $this->resolver;
+    }
+    /**
+     * Set the DNS server to use when looking up IP's
+     *
+     * @param string $dnsServer
+     */
+    public function setDnsServer($dnsServer = '8.8.8.8')
+    {
+        $this->dnsServer = $dnsServer;
+    }
+    /**
+     * Returns the configured DNS server
+     *
+     * @return string
+     */
+    public function getDnsServer()
+    {
+        return $this->dnsServer;
     }
 
     public function getHttpClient()
