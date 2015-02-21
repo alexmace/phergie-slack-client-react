@@ -18,6 +18,9 @@ class Client extends EventEmitter implements
      */
     protected $loop;
 
+    protected $httpClient;
+    protected $webSocketClient;
+
     /**
      * Sets the event loop dependency.
      *
@@ -40,6 +43,14 @@ class Client extends EventEmitter implements
         return $this->loop;
     }
 
+    public function getHttpClient()
+    {
+    	if (!$this->httpClient) {
+    		$this->httpClient = \React\HttpClient\Factory();
+    	}
+    	return $this->httpClient;
+    }
+
     /**
      * Initializes an IRC connection.
      *
@@ -54,6 +65,19 @@ class Client extends EventEmitter implements
     public function addConnection(ConnectionInterface $connection)
     {
         $this->emit('connect.before.each', array($connection));
+
+        $request = $this->getHttpClient()->request('GET', 'https://slack.com/api/rtm.start?token=' . $connection->getToken());
+        $request->on('response', function($response) use ($loop, $dns, $client, $logger)) {
+        	$response->on('data', function($data) use (&$body) {
+        		$body .= $data;
+        	});
+        	$response->on('end', function() use (&$body, $loop, $dns, $client, $logger) {
+        		$slackDetails = json_decode($body);
+
+        		$client->setWebSocketClient(new \Devristo\Phpws\Client\WebSocket($slackDetails->url, $loop, $logger));
+        	});
+        });
+        $request->end();
 /*
 		Probably won't want to distinguish between these for Slack.
 
