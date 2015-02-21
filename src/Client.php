@@ -1,6 +1,7 @@
 <?php
 /**
  * @todo Add an interface for the resolver stuff.
+ * @todo Add an interface for the logger stuff.
  *
  */
 
@@ -23,6 +24,12 @@ class Client extends EventEmitter implements
      * @var \React\EventLoop\LoopInterface
      */
     protected $loop;
+    /**
+     * Logging stream
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
 
     protected $httpClient;
     protected $webSocketClient;
@@ -98,6 +105,36 @@ class Client extends EventEmitter implements
         return $this->dnsServer;
     }
 
+	/**
+     * Returns a stream instance for logging data on the socket connection.
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        if (!$this->logger) {
+            // See testGetLoggerRunFromStdin
+            // @codeCoverageIgnoreStart
+            $stderr = defined('\STDERR') && !is_null(\STDERR)
+                ? \STDERR : fopen('php://stderr', 'w');
+            // @codeCoverageIgnoreEnd
+            $handler = new StreamHandler($stderr, Logger::DEBUG);
+            $handler->setFormatter(new LineFormatter("%datetime% %level_name% %message% %context%\n"));
+            $this->logger = new Logger(get_class($this));
+            $this->logger->pushHandler($handler);
+        }
+        return $this->logger;
+    }
+    /**
+     * Sets a logger for logging data on the socket connection.
+     *
+     * @param \Psr\Log\LoggerInterface
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function getHttpClient()
     {
     	if (!$this->httpClient) {
@@ -122,8 +159,13 @@ class Client extends EventEmitter implements
     {
         $this->emit('connect.before.each', array($connection));
 
+        $loop = $this->getLoop();
+        $resolver = $this->getResolver();
+        $client = $this;
+        $logger = $this->getLogger();
+
         $request = $this->getHttpClient()->request('GET', 'https://slack.com/api/rtm.start?token=' . $connection->getToken());
-        $request->on('response', function($response) use ($loop, $dns, $client, $logger) {
+        $request->on('response', function($response) use ($loop, $resolver, $client, $logger) {
         	$response->on('data', function($data) use (&$body) {
         		$body .= $data;
         	});
