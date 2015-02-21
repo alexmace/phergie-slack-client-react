@@ -67,7 +67,7 @@ class Client extends EventEmitter implements
         $this->emit('connect.before.each', array($connection));
 
         $request = $this->getHttpClient()->request('GET', 'https://slack.com/api/rtm.start?token=' . $connection->getToken());
-        $request->on('response', function($response) use ($loop, $dns, $client, $logger)) {
+        $request->on('response', function($response) use ($loop, $dns, $client, $logger) {
         	$response->on('data', function($data) use (&$body) {
         		$body .= $data;
         	});
