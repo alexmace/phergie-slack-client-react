@@ -46,7 +46,8 @@ class Client extends EventEmitter implements
     public function getHttpClient()
     {
     	if (!$this->httpClient) {
-    		$this->httpClient = \React\HttpClient\Factory();
+    		$factory = new \React\HttpClient\Factory();
+    		$this->httpClient = $factory->create($this->getLoop(), $this->getResolver());
     	}
     	return $this->httpClient;
     }
