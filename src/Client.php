@@ -12,6 +12,9 @@ use Phergie\Slack\ConnectionInterface;
 use React\EventLoop\LoopInterface;
 use React\Dns\Resolver\Factory;
 use React\Dns\Resolver\Resolver;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 class Client extends EventEmitter implements
     ClientInterface,
