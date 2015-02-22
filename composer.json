@@ -1,4 +1,10 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/alexmace/phpws"
+        }
+    ],
     "minimum-stability": "dev",
     "name": "phergie/phergie-slack-client-react",
     "description": "Slack client library built on React",
@@ -10,12 +16,6 @@
         "issues": "https://github.com/alexmace/phergie-slack-client-react/issues",
         "source": "https://github.com/alexmace/phergie-slack-client-react"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/alexmace/phpws"
-        }
-    ],
     "require": {
         "php": ">=5.4.2",
         "phergie/phergie-irc-parser": "1.*",
