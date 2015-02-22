@@ -190,7 +190,7 @@ class Client extends EventEmitter implements
         	$response->on('end', function() use (&$body, $loop, $client, $logger) {
         		$slackDetails = json_decode($body);
 
-        		$client->setWebSocketClient(new \Devristo\Phpws\Client\WebSocket($slackDetails->url, $loop, $logger));
+        		$client->setWebSocketClient(new WebSocket($slackDetails->url, $loop, $logger));
         	});
         });
         $request->end();
