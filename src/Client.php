@@ -15,7 +15,7 @@ use React\Dns\Resolver\Resolver;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Devristo\Phpws\Client\WebSocket
+use Devristo\Phpws\Client\WebSocket;
 
 class Client extends EventEmitter implements
     ClientInterface,
