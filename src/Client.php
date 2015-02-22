@@ -15,6 +15,7 @@ use React\Dns\Resolver\Resolver;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Devristo\Phpws\Client\WebSocket
 
 class Client extends EventEmitter implements
     ClientInterface,
@@ -138,6 +139,20 @@ class Client extends EventEmitter implements
         $this->logger = $logger;
     }
 
+    /**
+     * @todo Need a getWebSocketClient function, but what defaults?
+     */
+
+    /**
+     * Sets a web socket client.
+ 	 * 
+ 	 * @param \Devristo\Phpws\Client\WebSocket
+ 	 */
+    public function setWebSocketClient(WebSocket $webSocketClient) 
+    {
+    	$this->webSocketClient = $webSocketClient;
+    }
+
     public function getHttpClient()
     {
     	if (!$this->httpClient) {
@@ -168,11 +183,11 @@ class Client extends EventEmitter implements
         $logger = $this->getLogger();
 
         $request = $this->getHttpClient()->request('GET', 'https://slack.com/api/rtm.start?token=' . $connection->getToken());
-        $request->on('response', function($response) use ($loop, $resolver, $client, $logger) {
+        $request->on('response', function($response) use ($loop, $client, $logger) {
         	$response->on('data', function($data) use (&$body) {
         		$body .= $data;
         	});
-        	$response->on('end', function() use (&$body, $loop, $dns, $client, $logger) {
+        	$response->on('end', function() use (&$body, $loop, $client, $logger) {
         		$slackDetails = json_decode($body);
 
         		$client->setWebSocketClient(new \Devristo\Phpws\Client\WebSocket($slackDetails->url, $loop, $logger));
